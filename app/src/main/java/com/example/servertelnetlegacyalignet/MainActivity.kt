@@ -24,9 +24,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val puertosToConnect:Array<String> =  arrayOf<String>("50000", "51000", "50500", "52000","53000")
-        val adaptador = ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, puertosToConnect)
-        binding.spinner.adapter = adaptador
+        val puertosToConnect = resources.getStringArray(R.array.puertos)
+//        val puertosToConnect:Array<String> =  arrayOf<String>("50000", "51000", "50500", "52000","53000")
+        val adapter = ArrayAdapter(this,R.layout.lista_items, puertosToConnect)
+
+        with(binding.comboBoxMaterialDesign){
+            setAdapter(adapter)
+        }
+
 
 //        binding.radioGroup.setOnCheckedChangeListener{buttonView, isChecked ->
 //            val msg = "Hello"
@@ -38,13 +43,15 @@ class MainActivity : AppCompatActivity() {
         radioGroup.setOnCheckedChangeListener { group, checkedId ->
             if (binding.radioButtonTestAll.isChecked){
 
-                binding.tvPort.visibility = View.INVISIBLE
-                binding.spinner.visibility = View.INVISIBLE
-                Toast.makeText(this,"Se Probara el host con todos los puertos: (50000, 51000, 50500, 52000,53000)",Toast.LENGTH_SHORT).show()
+
+                binding.textInputLayoutPuerto.visibility = View.INVISIBLE
+                binding.imageView.visibility = View.INVISIBLE
+                Toast.makeText(this,"Puertos seleccionados:50000,51000,50500,52000,53000)",Toast.LENGTH_SHORT).show()
             }
             if (binding.radioButtonTestOne.isChecked){
-                binding.tvPort.visibility = View.VISIBLE
-                binding.spinner.visibility = View.VISIBLE
+                binding.textInputLayoutPuerto.visibility = View.VISIBLE
+                binding.imageView.visibility = View.VISIBLE
+
 
 
             }
@@ -58,7 +65,8 @@ class MainActivity : AppCompatActivity() {
             if (binding.radioButtonTestOne.isChecked == true){
 
                 val server = binding.etHost.text.toString()
-                val puerto:String= binding.spinner.selectedItem.toString()
+                val puerto:String = binding.comboBoxMaterialDesign.text.toString()
+//                val puerto:String= binding.spinner.selectedItem.toString()
 
                 testServer(server, puerto)
             }
@@ -93,36 +101,46 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun testWithAllThePorts(server:String){
+        hideKeyboard()
         val puertos = listOf<String>("50000", "51000", "50500", "52000","53000")
         val response = mutableListOf<String>()
 
 
 
-            CoroutineScope(Dispatchers.IO).launch {
+        val loading = LoadingDialog(this@MainActivity)
+        loading.startLoading()
+        CoroutineScope(Dispatchers.IO).launch {
+
+
                 for (puerto in puertos){
-                    var test = TestBody(server,puerto)
-                    var objetbodyTest = Body(listOf(test))
-                val call: Response<ServerResponse> = getRetrofit().create(ApiService::class.java).validateServer(objetbodyTest)
-                val bodyResponse = call.body()
-                println(bodyResponse)
-                runOnUiThread{
-                    if (call.isSuccessful){
-                        val testObject = bodyResponse?.tests
-                        val successParameter:Boolean? = testObject?.get(0)?.success
-                        if (successParameter == true){
-                            response.add(puerto)
-                            println("Entro a success")
+
+                    val test = TestBody(server,puerto)
+                    val objetbodyTest = Body(listOf(test))
+                    val call: Response<ServerResponse> = getRetrofit().create(ApiService::class.java).validateServer(objetbodyTest)
+                    val bodyResponse = call.body()
+                    println(bodyResponse)
+                    runOnUiThread{
+                        if (call.isSuccessful){
+
+                            val testObject = bodyResponse?.tests
+                            val successParameter:Boolean? = testObject?.get(0)?.success
+                            if (successParameter == true){
+                                response.add(puerto)
+                                println("Entro a success")
+                            }
+
                         }
 
                     }
 
-                }
-
             }
+//                loading.isDismiss()
                 println("Response after for ${response}")
 
                 binding.textView.text = response.toString()
+                loading.isDismiss()
         }
+
 
 
 
@@ -133,8 +151,10 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     private fun testServer(server: String, port:String){
         hideKeyboard()
-        var test = TestBody(server,port)
-        var objetbodyTest = Body(listOf(test))
+        val loading = LoadingDialog(this)
+        loading.startLoading()
+        val test = TestBody(server,port)
+        val objetbodyTest = Body(listOf(test))
         CoroutineScope(Dispatchers.IO).launch {
             val call: Response<ServerResponse> = getRetrofit().create(ApiService::class.java).validateServer(objetbodyTest)
             val pokemonBody = call.body()
@@ -149,25 +169,17 @@ class MainActivity : AppCompatActivity() {
                         binding.textView.text= "El host: $server No se conecto al puerto $port"
                     }
                     else{
+
                         binding.imageView.setImageResource(R.drawable.boton_verde)
                         binding.textView.text= "El host: $server Se conecto al puerto $port"
                     }
-//                    binding.tvNombre.text = pokemonBody?.name.toString()
-//                    binding.tvPeso.text = pokemonBody?.weight.toString()
-//                    val sprite: Sprites? = pokemonBody?.sprites
-//                    val urlString = sprite?.front_default
-//
-//                    Picasso.get().load(urlString).into(binding.ivPokemon)
 
-//                    binding.textViewResultado.text= pokemonBody.toString()
-//                    dogImages.clear()
-//                    dogImages.addAll(images)
-//                    adapter.notifyDataSetChanged()
                 }else{
                     Toast.makeText(this@MainActivity, "Ha Ocurrido un error", Toast.LENGTH_SHORT).show()
                 }
 
             }
+            loading.isDismiss()
 
         }
 
