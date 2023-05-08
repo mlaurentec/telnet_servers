@@ -5,85 +5,156 @@
     android:id="@+id/viewRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
+    android:padding= "32dp"
+    android:background="@color/background_app"
     tools:context=".MainActivity">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/tvTitulo"
         android:textSize="25sp"
+        android:textColor="@color/white"
+        android:textStyle="bold"
         android:text="Telnet Legacy Servers"
-        app:layout_constraintVertical_bias="0.02"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/tvHost"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-<!--    <TextView-->
-<!--        android:id="@+id/lbHost"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Escribe el host:"-->
-<!--        android:textSize="20dp"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.1"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintVertical_bias="0.15" />-->
-
-    <com.google.android.material.textfield.TextInputEditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/etHost"
-        android:hint="Escribe el Host"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginHorizontal="15dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginBottom="20dp"
-        app:layout_constraintVertical_bias="0.15"
-        ></com.google.android.material.textfield.TextInputEditText>
-
-<!--    <EditText-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text=""-->
-<!--        android:id="@+id/etHost"-->
-<!--        android:textSize="25dp"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.7"-->
-<!--        app:layout_constraintStart_toEndOf="@+id/lbHost"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintVertical_bias="0.15" />-->
-
-
     <TextView
-        android:id="@+id/textView"
-        android:layout_width="290dp"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textSize="25sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonTest"
-        app:layout_constraintVertical_bias="0.489" />
-
-    <Button
-        android:id="@+id/buttonTest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="116dp"
-
-        android:text="Test"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        android:layout_marginTop="20dp"
+        android:textStyle="bold"
+        android:id="@+id/tvHost"
+        android:textSize="15sp"
+        android:text="Ingresa el host:"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/tvTitulo"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPuerto" />
+
+      />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitulo"
+        android:id="@+id/etHost"
+        >
+
+        <EditText
+            android:id="@+id/textNumberOne"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:autofillHints="emailAddress"
+            android:inputType="number"
+            android:textColor="@color/white"
+            android:maxLength="3"
+            app:layout_constraintStart_toStartOf="@+id/textMain"
+            app:layout_constraintTop_toBottomOf="@+id/textMain"
+            tools:ignore="LabelFor"
+            tools:text="172" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/white"
+            android:layout_marginStart="10dp"
+            android:text="."
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/textNumberTwo"
+            android:layout_width="50dp"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:layout_margin="10dp"
+            android:autofillHints="emailAddress"
+            android:inputType="number"
+            android:maxLength="3"
+            app:layout_constraintBottom_toBottomOf="@+id/textNumberOne"
+            app:layout_constraintStart_toEndOf="@+id/textNumberOne"
+            app:layout_constraintTop_toTopOf="@+id/textNumberOne"
+            tools:ignore="LabelFor"
+            tools:text="19" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/white"
+            android:text="."
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/textNumberThree"
+            android:layout_width="50dp"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:autofillHints="emailAddress"
+            android:textColor="@color/white"
+            android:inputType="number"
+            android:maxLength="3"
+            app:layout_constraintBottom_toBottomOf="@+id/textNumberTwo"
+            app:layout_constraintStart_toEndOf="@+id/textNumberTwo"
+            app:layout_constraintTop_toTopOf="@+id/textNumberTwo"
+            tools:ignore="LabelFor"
+            tools:text="47"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:text="."
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/textNumberFour"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_margin="10dp"
+            android:autofillHints="emailAddress"
+            android:textColor="@color/white"
+            android:inputType="number"
+            android:maxLength="3"
+            app:layout_constraintBottom_toBottomOf="@+id/textNumberThree"
+            app:layout_constraintStart_toEndOf="@+id/textNumberThree"
+            app:layout_constraintTop_toTopOf="@+id/textNumberThree"
+            tools:ignore="LabelFor"
+            tools:text="70" />
+
+    </LinearLayout>
+
+<!--    <com.google.android.material.textfield.TextInputEditText-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:id="@+id/etHost"-->
+<!--        android:hint="Escribe el Host"-->
+<!--        android:textSize="20sp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        android:layout_marginBottom="20dp"-->
+<!--        app:layout_constraintVertical_bias="0.15"-->
+<!--        ></com.google.android.material.textfield.TextInputEditText>-->
+
+
+
 
     <com.google.android.material.textfield.TextInputLayout
 
@@ -93,8 +164,16 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="15dp"
         android:layout_marginTop="30dp"
-        android:hint="Ingresa el puerto"
+        android:textColorHint="@color/white"
+        android:hint="Ingresar puerto"
+        android:textColorHighlight="@color/white"
+        android:textColorLink="@color/white"
+        app:hintTextColor="@color/blue"
+
+        app:boxBackgroundColor="@color/white"
+        app:boxStrokeColor="@color/blue"
         app:layout_constraintEnd_toEndOf="parent"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etHost">
 
@@ -103,36 +182,40 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="none"
+
+
+
+
+
             tools:layout_editor_absoluteX="13dp"
             tools:layout_editor_absoluteY="177dp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="144dp"
-        android:src="@drawable/boton_blanco"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.679"
-        app:layout_constraintStart_toEndOf="@+id/textView" />
+<!--    <ImageView-->
+<!--        android:id="@+id/imageView"-->
+<!--        android:layout_width="50dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_marginEnd="16dp"-->
+<!--        android:layout_marginBottom="144dp"-->
+<!--        android:src="@drawable/boton_blanco"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.679"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/textView" />-->
 
     <RadioGroup
         android:id="@+id/radioGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
-        android:layout_marginHorizontal="20dp"
-        android:orientation="horizontal"
 
+        android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/buttonTest"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-
+        app:layout_constraintVertical_bias="0.12"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPuerto">
 
         <RadioButton
@@ -141,6 +224,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:checked="true"
+            android:textColor="@color/white"
             android:text="Test un puerto" />
 
         <RadioButton
@@ -148,8 +232,37 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textColor="@color/white"
             android:text="Test todos los puertos" />
 
     </RadioGroup>
+
+<!--    <Button-->
+<!--        android:id="@+id/buttonTest"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="80dp"-->
+<!--        android:layout_marginStart="20dp"-->
+<!--        android:layout_marginEnd="20dp"-->
+<!--        android:text="Test"-->
+<!--        android:textColor="@color/white"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+
+
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPuerto"-->
+<!--        app:layout_constraintVertical_bias="1" />-->
+    <Button
+        android:id="@+id/buttonTest"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:text="Test"
+        android:layout_marginBottom="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

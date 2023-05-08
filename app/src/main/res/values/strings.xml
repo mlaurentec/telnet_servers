@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Server telnet legacy alignet</string>
-<!--    dropdown items-->
-<!--    50000", "51000", "50500", "52000","53000")-->
+    <!--    dropdown items-->
+    <!--    50000", "51000", "50500", "52000","53000")-->
     <string-array name="puertos">
         <item>50000</item>
         <item>51000</item>

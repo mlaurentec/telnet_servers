@@ -1,12 +1,14 @@
 package com.example.servertelnetlegacyalignet
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.servertelnetlegacyalignet.databinding.ActivityMainBinding
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
@@ -19,11 +21,19 @@ import retrofit2.converter.gson.GsonConverterFactory
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-
+    companion object{
+        const val CONNECTED = "success"
+        const val HOST = "host"
+        const val PORT = "port"
+        const val PORTSCONNECTED = "portConnected"
+        const val PORTSNOTCONNECTED = "portNotConnected"
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
+        val screenSplash = installSplashScreen()
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        screenSplash.setKeepOnScreenCondition{false}
         val puertosToConnect = resources.getStringArray(R.array.puertos)
 //        val puertosToConnect:Array<String> =  arrayOf<String>("50000", "51000", "50500", "52000","53000")
         val adapter = ArrayAdapter(this,R.layout.lista_items, puertosToConnect)
@@ -33,11 +43,6 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-//        binding.radioGroup.setOnCheckedChangeListener{buttonView, isChecked ->
-//            val msg = "Hello"
-//            Toast.makeText(this@MainActivity, msg, Toast.LENGTH_SHORT).show()
-//
-//        }
         val radioGroup = binding.radioGroup
 
         radioGroup.setOnCheckedChangeListener { group, checkedId ->
@@ -45,33 +50,76 @@ class MainActivity : AppCompatActivity() {
 
 
                 binding.textInputLayoutPuerto.visibility = View.INVISIBLE
-                binding.imageView.visibility = View.INVISIBLE
+
                 Toast.makeText(this,"Puertos seleccionados:50000,51000,50500,52000,53000)",Toast.LENGTH_SHORT).show()
             }
             if (binding.radioButtonTestOne.isChecked){
                 binding.textInputLayoutPuerto.visibility = View.VISIBLE
-                binding.imageView.visibility = View.VISIBLE
 
 
 
             }
         }
 
-
-
-
         binding.buttonTest.setOnClickListener{
 
-            if (binding.radioButtonTestOne.isChecked == true){
 
-                val server = binding.etHost.text.toString()
+            if (binding.radioButtonTestOne.isChecked == true){
+                if (binding.textNumberOne.text.toString().isEmpty()) {
+                    // El campo1 está vacío, mostrar un mensaje de error
+                    binding.textNumberOne.error = "Debe ingresar un valor"
+                    return@setOnClickListener
+                }
+                if (binding.textNumberTwo.text.toString().isEmpty()) {
+                    // El campo1 está vacío, mostrar un mensaje de error
+                    binding.textNumberTwo.error = "Debe ingresar un valor"
+                    return@setOnClickListener
+                }
+                if (binding.textNumberThree.text.toString().isEmpty()) {
+                    // El campo1 está vacío, mostrar un mensaje de error
+                    binding.textNumberThree.error = "Debe ingresar un valor"
+                    return@setOnClickListener
+                }
+                if (binding.textNumberFour.text.toString().isEmpty()) {
+                    // El campo1 está vacío, mostrar un mensaje de error
+                    binding.textNumberFour.error = "Debe ingresar un valor"
+                    return@setOnClickListener
+                }
+                if (binding.comboBoxMaterialDesign.text.toString().isEmpty()) {
+                    // El campo1 está vacío, mostrar un mensaje de error
+                    binding.comboBoxMaterialDesign.error = "Ingresa un Puerto"
+                    return@setOnClickListener
+                }
+
+                val server = binding.textNumberOne.text.toString() + "." + binding.textNumberTwo.text.toString() + "." + binding.textNumberThree.text.toString() + "." + binding.textNumberFour.text.toString()
                 val puerto:String = binding.comboBoxMaterialDesign.text.toString()
 //                val puerto:String= binding.spinner.selectedItem.toString()
 
                 testServer(server, puerto)
             }
             if (binding.radioButtonTestAll.isChecked == true){
-                val server = binding.etHost.text.toString()
+                if (binding.textNumberOne.text.toString().isEmpty()) {
+                    // El campo1 está vacío, mostrar un mensaje de error
+                    binding.textNumberOne.error = "Campo vacío"
+                    return@setOnClickListener
+                }
+                if (binding.textNumberTwo.text.toString().isEmpty()) {
+                    // El campo1 está vacío, mostrar un mensaje de error
+                    binding.textNumberTwo.error = "Campo vacío"
+                    return@setOnClickListener
+                }
+                if (binding.textNumberThree.text.toString().isEmpty()) {
+                    // El campo1 está vacío, mostrar un mensaje de error
+                    binding.textNumberThree.error = "campo vacío"
+                    return@setOnClickListener
+                }
+                if (binding.textNumberFour.text.toString().isEmpty()) {
+                    // El campo1 está vacío, mostrar un mensaje de error
+                    binding.textNumberFour.error = "Campo vacío"
+                    return@setOnClickListener
+                }
+
+                val server = binding.textNumberOne.text.toString() + "." + binding.textNumberTwo.text.toString() + "." + binding.textNumberThree.text.toString() + "." + binding.textNumberFour.text.toString()
                 testWithAllThePorts(server)
 //                Toast.makeText(this, "Todavia no esta implementado", Toast.LENGTH_SHORT).show()
             }
@@ -80,6 +128,32 @@ class MainActivity : AppCompatActivity() {
 
 
 
+    }
+
+    private fun validateFieldEmpty(){
+        if (binding.textNumberOne.text.toString().isEmpty()) {
+            // El campo1 está vacío, mostrar un mensaje de error
+            binding.textNumberOne.error = "Campo vacío"
+            return
+        }
+    }
+
+    private fun navigateToResultOne(host: String, port: String, isConnected: Boolean) {
+        val intent = Intent(this, ResultOneTestActivity::class.java)
+
+        intent.putExtra(HOST, host)
+        intent.putExtra(PORT, port)
+        intent.putExtra(CONNECTED, isConnected)
+        startActivity(intent)
+    }
+
+    private fun navigateToResultMany(host: String, portConnected: Array<String>, portNotConnected:Array<String>) {
+        val intent = Intent(this, ResultManyTests::class.java)
+
+        intent.putExtra(HOST, host)
+        intent.putExtra(PORTSCONNECTED, portConnected)
+        intent.putExtra(PORTSNOTCONNECTED, portNotConnected)
+        startActivity(intent)
     }
 
 
@@ -103,7 +177,8 @@ class MainActivity : AppCompatActivity() {
     private fun testWithAllThePorts(server:String){
         hideKeyboard()
         val puertos = listOf<String>("50000", "51000", "50500", "52000","53000")
-        val response = mutableListOf<String>()
+        var puertosConnected = mutableListOf<String>()
+        var puertosNotConnected = mutableListOf<String>()
 
 
 
@@ -111,11 +186,17 @@ class MainActivity : AppCompatActivity() {
         loading.startLoading()
         CoroutineScope(Dispatchers.IO).launch {
 
+            var test = mutableListOf<TestBody>()
+                    for (puerto in puertos) {
 
-                for (puerto in puertos){
+//                        val test = listOf<TestBody>(TestBody(server, puerto) )
 
-                    val test = TestBody(server,puerto)
-                    val objetbodyTest = Body(listOf(test))
+                        test.add(TestBody(server, puerto))
+
+
+                    }
+            println("test -${test}")
+                    val objetbodyTest = Body(test)
                     val call: Response<ServerResponse> = getRetrofit().create(ApiService::class.java).validateServer(objetbodyTest)
                     val bodyResponse = call.body()
                     println(bodyResponse)
@@ -123,22 +204,33 @@ class MainActivity : AppCompatActivity() {
                         if (call.isSuccessful){
 
                             val testObject = bodyResponse?.tests
-                            val successParameter:Boolean? = testObject?.get(0)?.success
-                            if (successParameter == true){
-                                response.add(puerto)
-                                println("Entro a success")
+                            // recorre objetos y sacar la respuesta
+                            // obtenermos los tests
+
+                            for (t in testObject!!){
+                                println(t)
+                                val successParameter:Boolean? = t?.success
+                                if (successParameter == true){
+                                    puertosConnected.add(t.port)
+                                    println("puerto agregado ${t.port}")
+                                }
+                                else{puertosNotConnected.add(t.port)}
+
                             }
+                            println("Response after for ${puertosConnected}")
+
+
+                            loading.isDismiss()
+                            navigateToResultMany(server, puertosConnected.toTypedArray(), puertosNotConnected.toTypedArray())
+
 
                         }
 
                     }
 
-            }
-//                loading.isDismiss()
-                println("Response after for ${response}")
+//            }
 
-                binding.textView.text = response.toString()
-                loading.isDismiss()
+
         }
 
 
@@ -157,24 +249,20 @@ class MainActivity : AppCompatActivity() {
         val objetbodyTest = Body(listOf(test))
         CoroutineScope(Dispatchers.IO).launch {
             val call: Response<ServerResponse> = getRetrofit().create(ApiService::class.java).validateServer(objetbodyTest)
-            val pokemonBody = call.body()
-            println(pokemonBody)
+            val responseBody = call.body()
+            println(responseBody)
             runOnUiThread{
                 if (call.isSuccessful){
 //                    binding.textView.text = pokemonBody?.tests.toString()
-                    val testObject = pokemonBody?.tests
-                    val successParameter:Boolean? = testObject?.get(0)?.success
-                    if (successParameter == false){
-                        binding.imageView.setImageResource(R.drawable.boton_rojo)
-                        binding.textView.text= "El host: $server No se conecto al puerto $port"
-                    }
-                    else{
+                    val testObject = responseBody?.tests
+                        val host = testObject?.get(0)?.host.toString()
+                        val port = testObject?.get(0)?.port.toString()
+                        val success = testObject?.get(0)?.success
+                        navigateToResultOne(host, port, success!!)
 
-                        binding.imageView.setImageResource(R.drawable.boton_verde)
-                        binding.textView.text= "El host: $server Se conecto al puerto $port"
                     }
 
-                }else{
+                else{
                     Toast.makeText(this@MainActivity, "Ha Ocurrido un error", Toast.LENGTH_SHORT).show()
                 }
 
