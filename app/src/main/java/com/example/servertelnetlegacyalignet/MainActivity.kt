@@ -2,21 +2,22 @@ package com.example.servertelnetlegacyalignet
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.servertelnetlegacyalignet.databinding.ActivityMainBinding
-import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
@@ -159,8 +160,16 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun getRetrofit(): Retrofit {
+        val okHttpClient = OkHttpClient.Builder()
+            .connectTimeout(20, TimeUnit.SECONDS) // Tiempo de espera de conexión personalizado
+            .readTimeout(20, TimeUnit.SECONDS) // Tiempo de espera de lectura personalizado
+            .callTimeout(20, TimeUnit.SECONDS) // Tiempo de espera de llamada personalizado
+            .build()
         return Retrofit.Builder()
             .baseUrl("https://xl0p1u8rf1.execute-api.us-east-1.amazonaws.com/")
+            .client(
+                okHttpClient
+            )
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -197,36 +206,52 @@ class MainActivity : AppCompatActivity() {
                     }
             println("test -${test}")
                     val objetbodyTest = Body(test)
-                    val call: Response<ServerResponse> = getRetrofit().create(ApiService::class.java).validateServer(objetbodyTest)
-                    val bodyResponse = call.body()
-                    println(bodyResponse)
-                    runOnUiThread{
-                        if (call.isSuccessful){
+                    try {
+                        val call: Response<ServerResponse> = getRetrofit().create(ApiService::class.java).validateServer(objetbodyTest)
+                        val bodyResponse = call.body()
+                        println(" Response body many Tests: $bodyResponse")
 
-                            val testObject = bodyResponse?.tests
-                            // recorre objetos y sacar la respuesta
-                            // obtenermos los tests
+                        runOnUiThread{
+                            if (call.isSuccessful){
 
-                            for (t in testObject!!){
-                                println(t)
-                                val successParameter:Boolean? = t?.success
-                                if (successParameter == true){
-                                    puertosConnected.add(t.port)
-                                    println("puerto agregado ${t.port}")
+                                val testObject = bodyResponse?.tests
+
+
+                                for (t in testObject!!){
+                                    println(t)
+                                    val successParameter:Boolean? = t?.success
+                                    if (successParameter == true){
+                                        puertosConnected.add(t.port)
+                                        println("puerto agregado ${t.port}")
+                                    }
+                                    else{puertosNotConnected.add(t.port)}
+
                                 }
-                                else{puertosNotConnected.add(t.port)}
+                                println("Response after for ${puertosConnected}")
+
+
+
+                                navigateToResultMany(server, puertosConnected.toTypedArray(), puertosNotConnected.toTypedArray())
+                                loading.isDismiss()
+
 
                             }
-                            println("Response after for ${puertosConnected}")
-
-
-                            loading.isDismiss()
-                            navigateToResultMany(server, puertosConnected.toTypedArray(), puertosNotConnected.toTypedArray())
 
 
                         }
-
                     }
+                    catch (
+                        e: Exception
+                    ){
+//
+                        println("ocurrio un error $e")
+                        loading.isDismiss()
+                        runOnUiThread{
+                            Toast.makeText(this@MainActivity, "Ha Ocurrido un error $e", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+
 
 //            }
 

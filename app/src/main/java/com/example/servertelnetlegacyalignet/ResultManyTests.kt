@@ -17,7 +17,7 @@ class ResultManyTests : AppCompatActivity() {
         binding = ActivityResultManyTestsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
+        println("entro a many Result")
         val host:String? = intent.extras?.getString(MainActivity.HOST) ?: ""
         val portsConected:Array<String>? = intent.getSerializableExtra(PORTSCONNECTED) as? Array<String>
         val portsNotConected:Array<String>? = intent.getSerializableExtra(PORTSNOTCONNECTED) as? Array<String>
@@ -40,8 +40,17 @@ class ResultManyTests : AppCompatActivity() {
     }
 
     private fun cargarTexto(portsConnected: String, portsNotConnected: String, host: String){
-        binding.tvDescriptionManySuccess.text = "El host $host se conecto correctamente a los puertos: $portsConnected."
-        binding.tvDescriptionManyFailed.text = "El host $host no se puedo conectar a los puertos: $portsNotConnected."
+        if (binding.tvDescriptionManySuccess.text.toString().isEmpty()){
+
+            binding.tvDescriptionManySuccess.text = "ninguna"
+        }
+        else{
+        binding.tvDescriptionManySuccess.text = "El host $host se conecto correctamente a los puertos: $portsConnected."}
+        if (binding.tvDescriptionManyFailed.text.toString().isEmpty()){
+        binding.tvDescriptionManyFailed.text = "El host $host no se puedo conectar a ningun puerto"}
+        else{
+            binding.tvDescriptionManyFailed.text = "El host $host no se puedo conectar a los puertos: $portsNotConnected."
+        }
     }
 
     private fun listeners() {
